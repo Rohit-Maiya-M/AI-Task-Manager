@@ -69,7 +69,7 @@ try {
 
     while ($true) {
         foreach ($job in $jobs) {
-            Receive-Job -Job $job
+            Receive-Job -Job $job -ErrorAction Continue
         }
 
         $failed = $jobs | Where-Object { $_.State -in @("Failed", "Stopped", "Completed") }
