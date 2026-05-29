@@ -1,0 +1,30 @@
+.group-edit-main {
+  align-items: center;
+}
+
+.group-edit-main .back-btn {
+  align-self: flex-start;
+}
+
+.group-edit-card {
+  max-width: 760px;
+}
+
+.group-edit-card .card-header {
+  text-align: left;
+}
+
+@media (max-width: 820px) {
+  .group-edit-main {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+
+  .group-edit-card {
+    padding: 1.5rem;
+  }
+
+  .form-row-split {
+    flex-direction: column;
+  }
+}

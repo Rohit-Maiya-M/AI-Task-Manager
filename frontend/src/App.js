@@ -16,6 +16,7 @@ import AddGroupMember from "./pages/AddGroupMember";
 import ViewGroupMembers from "./pages/ViewGroupMembers";
 import AssignedTasksToUser from "./pages/AssignedTasksToUser";
 import GroupTaskPage from "./pages/GroupTaskPage";
+import GroupAdminEditTask from "./pages/GroupAdminEditTask";
 import './App.css';
 
 function App() {
@@ -66,6 +67,8 @@ function App() {
           <Route path="admin/view-members" element={<ProtectedRoute><ViewGroupMembers /></ProtectedRoute>} />
           <Route path="admin/member-tasks" element={<ProtectedRoute><AssignedTasksToUser /></ProtectedRoute>} />
           <Route path="task/create" element={<ProtectedRoute><GroupTaskPage /></ProtectedRoute>} />
+          <Route path="task/edit" element={<ProtectedRoute><GroupAdminEditTask /></ProtectedRoute>} />
+          <Route path="task/edit/:groupId/:taskId" element={<ProtectedRoute><GroupAdminEditTask /></ProtectedRoute>} />
         </Route>        
       </Routes>
     </Router>

@@ -119,7 +119,7 @@ export default function GroupAdminDashBoard() {
           </div>
 
           {/* Box 3: Edit Task For Group */}
-          <div className="square-btn admin-btn" onClick={() => dueTasks[0] && handleTaskNavigation(dueTasks[0].id)}>
+          <div className="square-btn admin-btn" onClick={() => navigate(`/group/task/edit?groupId=${groupId}`)}>
             <FaPencilAlt size={28} />
             <span>Edit Task</span>
           </div>
