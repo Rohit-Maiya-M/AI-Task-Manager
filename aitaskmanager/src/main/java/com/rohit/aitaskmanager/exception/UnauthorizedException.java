@@ -1,4 +1,7 @@
 package com.rohit.aitaskmanager.exception;
 
-public class UnauthorizedException {
+public class UnauthorizedException extends RuntimeException{
+    public UnauthorizedException(String msg){
+        super(msg);
+    }
 }

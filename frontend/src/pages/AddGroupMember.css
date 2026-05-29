@@ -1,0 +1,144 @@
+/* GroupCreateMember.css */
+
+.group-member-container.admin-theme {
+  background-color: #0f172a; /* Admin Dark Theme consistency */
+  color: #e2e8f0;
+}
+
+.group-member-main {
+  flex: 1;
+  margin-left: var(--sidebar-width, 260px);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.group-member-main .back-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-bottom: 2rem;
+}
+
+.group-member-main .back-btn:hover {
+  color: #c084fc; /* Admin Purple Accent */
+}
+
+.member-action-card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  align-self: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.member-icon {
+  font-size: 3rem;
+  color: #c084fc; /* Admin Purple theme */
+  margin-bottom: 1rem;
+}
+
+.member-action-card h1 {
+  color: #f8fafc;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.member-action-card p {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.member-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.member-form label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.member-form input {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 12px;
+  color: #f8fafc;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.member-form input:focus {
+  border-color: #c084fc;
+  box-shadow: 0 0 0 1px #c084fc;
+}
+
+/* Custom Alert Boxes */
+.alert-box {
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.success-alert {
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #10b981;
+}
+
+.error-alert {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+/* Submit Action Button */
+.submit-member-btn {
+  background-color: transparent;
+  border: 1px solid #c084fc;
+  color: #c084fc;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-member-btn:hover:not(:disabled) {
+  background-color: #c084fc;
+  color: #0f172a;
+  transform: translateY(-1px);
+}
+
+.submit-member-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

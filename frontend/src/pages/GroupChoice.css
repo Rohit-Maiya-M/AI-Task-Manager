@@ -1,0 +1,113 @@
+
+
+
+
+
+
+
+/* GroupChoice.css */
+
+/* Core Layout Container with explicit background gradient matching choice page */
+.choice-page-container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #872ef5 10%, #c7dce8 50%, #c7dce8 50%, #872ef5 90%);
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Back Navigation Arrow Link */
+.back-to-main-btn {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background: transparent;
+  border: none;
+  color: #161616;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.back-to-main-btn:hover {
+  color: white;
+  transform: translateX(-2px);
+}
+
+/* Choice Cards Grid Alignment */
+.choice-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px; 
+}
+
+/* Glassmorphic Uniform Custom Tile Elements */
+.choice-tile {
+  transition: all 0.3s ease; 
+  opacity: 0.85;             
+  width: 280px;              
+  border: 1px solid rgba(255, 255, 255, 0.4) !important; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Admin Panel Custom Icons Styling */
+.choice-icon {
+  font-size: 2.2rem;
+  color: #872ef5;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.choice-tile h2 {
+  margin-bottom: 1rem;
+  color: #161616;
+  font-weight: 600;
+}
+
+.choice-tile p {
+  color: #393939;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Interactive Visual Hover States */
+.choice-tile:hover {
+  opacity: 1;                
+  transform: translateY(-5px) scale(1.03);    
+  background-color: rgba(255, 255, 255, 0.3) !important; 
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4) !important;
+}
+
+.choice-tile:hover .choice-icon {
+  transform: scale(1.1);
+}
+
+.choice-tile:active {
+  transform: scale(0.97);    
+  opacity: 0.9;              
+}
+
+/* Responsive Structural Breakdown Rule */
+@media (max-width: 600px) {
+  .choice-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .choice-page-container {
+    height: auto;
+    padding: 3rem 1rem;
+  }
+}

@@ -1,0 +1,88 @@
+{/* Left side gradient */}
+            <div
+                style={{
+                    flex: 1,
+                    background: "white",
+                    color: "white",
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",                    
+                    padding: "4rem",
+                    overflow: "hidden"      // hide overflow of circles
+                }}>
+                
+                <div
+                    style={{
+                    position: "absolute",
+                    top: "0px",
+                    left: "0px",
+                    width: "300px",
+                    height: "300px",
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.1)"
+                    }}
+                />
+                <div
+                    style={{
+                    position: "absolute",
+                    bottom: "-120px",
+                    right: "-120px",
+                    width: "400px",
+                    height: "400px",
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.15)"
+                    }}
+                />
+
+                {/* Text content */}
+                <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>WELCOME</h1>
+                <h2 style={{ fontSize: "1.8rem", marginBottom: "1rem" }}>YOUR HEADLINE NAME</h2>
+                <p style={{ maxWidth: "400px", fontSize: "1.1rem", lineHeight: "1.5" }}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua.
+                </p>
+            </div>
+
+            
+
+            {/* Right side gradient */}
+            <div 
+                style={{
+                    flex: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#f4f4f4"
+                }}>
+                    <Tile style={{ padding: "2rem", width: "400px", backgroundColor: "white"}}>
+
+                        <h2 style={{
+                            marginBottom: "1rem"
+                        }}>Login</h2>
+
+                        <TextInput
+                            id="username"
+                            labelText="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            style={{ width: "100%"}}
+                            />
+                        
+                        <PasswordInput
+                            id="password"
+                            labelText="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            style={{ width: "100%", marginTop: "1rem"}}
+                        />
+
+                        <Button 
+                        kind="primary"
+                        onClick={handleLogin}
+                        style={{ marginTop: "1rem", width: "100%"}}>
+                            Login
+                        </Button>
+                    </Tile>
+                </div>

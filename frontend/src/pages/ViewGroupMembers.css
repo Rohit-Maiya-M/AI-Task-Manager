@@ -1,0 +1,158 @@
+/* ViewGroupMembers.css */
+
+.group-view-container.admin-theme {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+.group-view-main {
+  flex: 1;
+  margin-left: var(--sidebar-width, 260px);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.group-view-main .back-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-bottom: 2rem;
+}
+
+.group-view-main .back-btn:hover {
+  color: #c084fc;
+}
+
+.view-members-card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 750px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  align-self: center;
+}
+
+.view-icon {
+  font-size: 3rem;
+  color: #c084fc;
+  margin-bottom: 1rem;
+}
+
+.loading-roster {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Tabular Roster Grid Rules */
+.members-list-wrapper {
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.members-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.members-table th {
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #334155;
+}
+
+.member-row {
+  border-bottom: 1px solid #334155;
+  transition: background-color 0.15s ease;
+}
+
+.member-row:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.member-row td {
+  padding: 16px;
+}
+
+.member-meta-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.role-icon {
+  font-size: 1.25rem;
+}
+
+.role-icon.admin { color: #c084fc; }
+.role-icon.member { color: #38bdf8; }
+
+.text-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-name {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.member-subtext {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Badge Layouts */
+.role-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.role-badge.admin { background-color: rgba(168, 85, 247, 0.15); color: #c084fc; }
+.role-badge.member { background-color: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+
+/* Eviction / Deletion Button Action */
+.evict-btn {
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.evict-btn:hover:not(:disabled) {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.evict-btn:disabled {
+  opacity: 0.3;
+  border-color: #64748b;
+  color: #64748b;
+  cursor: not-allowed;
+}

@@ -1,0 +1,110 @@
+.library-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #1a202c;
+}
+
+.library-main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width, 260px);
+  padding: 3rem;
+}
+
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.library-header h1 {
+  color: #f6e05e; /* Neon Yellow */
+  font-size: 2.5rem;
+}
+
+.library-controls select {
+  background: #2d3748;
+  color: #e2e8f0;
+  border: 1px solid #4a5568;
+  padding: 8px;
+  border-radius: 6px;
+  margin-left: 10px;
+  outline: none;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.library-card {
+  background: #2d3748;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.library-card:hover {
+  border-color: #00f5d4; /* Teal Glow */
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.priority-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.priority-dot.HIGH { background: #ff6b6b; box-shadow: 0 0 8px #ff6b6b; }
+.priority-dot.MEDIUM { background: #f6e05e; box-shadow: 0 0 8px #f6e05e; }
+.priority-dot.LOW { background: #00f5d4; box-shadow: 0 0 8px #00f5d4; }
+
+.category-tag {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  text-transform: uppercase;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #4a5568;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.pagination {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination button {
+  background: #2d3748;
+  color: #f6e05e;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

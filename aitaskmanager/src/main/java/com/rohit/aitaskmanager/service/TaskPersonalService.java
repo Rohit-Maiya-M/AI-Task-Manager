@@ -10,10 +10,12 @@ import com.rohit.aitaskmanager.repository.TaskRepository;
 import com.rohit.aitaskmanager.repository.UserRepository;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -158,6 +160,27 @@ public class TaskPersonalService {
         return tasks.map(this::mapToResponse);
     }
 
+    public List<String> getTags(Long userId) {
+        List<String> tags = taskRepository.findByCreatedByIdAndAllTags(userId);
+        return tags != null ? tags : new ArrayList<>();
+    }
+
+    @Transactional
+    public void updateLastVisited(Long userId, Long taskId) {
+        Task task = taskRepository.findByIdAndCreatedById(taskId, userId);
+        if(task == null)
+            throw new TaskNotFoundException("Task not found");
+
+        task.setLastVisited(LocalDateTime.now());
+        // No need for .save() if using @Transactional
+    }
+
+    public TaskResponseDTO getTaskById(Long userId, Long taskId){
+        Task task = taskRepository.findByIdAndCreatedById(taskId, userId);
+        if(task == null)
+            throw new TaskNotFoundException("Task not found");
+        return mapToResponse(task);
+    }
 
     private Task mapToEntity(TaskRequestDTO dto){
         User user = getUserOrThrow(dto.getUserId());
@@ -175,6 +198,7 @@ public class TaskPersonalService {
                 .completed(dto.getCompleted() != null ? dto.getCompleted() : false)
                 .createdBy(user)
                 .lastVisited(LocalDateTime.now())
+                .taskType(TaskType.PERSONAL)
                 .build();
     }
 
@@ -183,6 +207,7 @@ public class TaskPersonalService {
                 .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
+                .content(task.getContent())
                 .status(task.getStatus())
                 .priority(task.getPriority())
                 .dueDate(task.getDueDate())
@@ -200,7 +225,6 @@ public class TaskPersonalService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with id: " + userId));
         return user;
-
     }
 
     private Task getTaskOrThrow(Long userId, Long taskId){

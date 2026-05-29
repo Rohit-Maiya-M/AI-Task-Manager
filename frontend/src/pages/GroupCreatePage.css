@@ -1,0 +1,240 @@
+/* ==========================================================================
+   Group Admin Creation Card Layout Fixes
+   ========================================================================== */
+
+.group-create-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #1a202c; /* Deep slate background matching image_ae5acf.png */
+  color: #e2e8f0;
+  justify-content: center; /* Centers horizontally on screen */
+  align-items: center; /* Centers vertically on screen */
+  position: relative;
+}
+
+.group-create-main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Absolute positioning for the back navigation element */
+.group-create-main .back-btn {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.group-create-main .back-btn:hover {
+  color: #f6e05e; /* Gold glow highlight on hover */
+}
+
+/* The Core Card Wrapper seen in image_ae5acf.png */
+.group-create-card {
+  background-color: #2d3748;
+  border: 1px solid #393939;
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 540px; /* Snug frame boundary */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* FIXED: Explicitly forcing a vertical column stack */
+.card-header {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; /* Centers components horizontally inside column */
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.group-icon {
+  font-size: 3rem;
+  color: #00f5d4; /* Vibrant teal icon fill */
+  margin-bottom: 0.75rem;
+}
+
+.card-header h1 {
+  color: #f6e05e; /* Yellow neon text color */
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.card-header p {
+  color: #a0aec0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  max-width: 90%; /* Prevents text from bleeding edge-to-edge */
+  margin: 0 auto;
+}
+
+/* Form inputs & structure */
+.group-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+  background-color: #1a202c;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  padding: 12px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #00f5d4;
+  box-shadow: 0 0 0 1px #00f5d4;
+}
+
+/* Form submission action button layout styling */
+.submit-group-btn {
+  background-color: transparent;
+  border: 1px solid #f6e05e;
+  color: #f6e05e;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.submit-group-btn:hover:not(:disabled) {
+  background-color: #f6e05e;
+  color: #1a202c;
+  transform: translateY(-1px);
+}
+
+/* Success State Custom Overrides */
+.success-icon {
+  font-size: 3.5rem;
+  color: #00f5d4; /* Teal confirmation color */
+  margin-bottom: 0.75rem;
+  animation: scaleUp 0.3s ease-out;
+}
+
+.id-display-container {
+  background-color: #1a202c;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px dashed #4a5568;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.id-display-container label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.id-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.generated-id {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #f6e05e; /* Neon Yellow focus */
+  letter-spacing: 2px;
+}
+
+.copy-id-btn {
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.copy-id-btn:hover {
+  background: #4a5568;
+  border-color: #00f5d4;
+  color: #00f5d4;
+}
+
+.warning-note {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.warning-note strong {
+  color: #ff6b6b;
+}
+
+.proceed-btn {
+  background-color: #00f5d4 !important;
+  color: #1a202c !important;
+  border-color: #00f5d4 !important;
+}
+
+.proceed-btn:hover {
+  background-color: transparent !important;
+  color: #00f5d4 !important;
+  transform: translateY(-1px);
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

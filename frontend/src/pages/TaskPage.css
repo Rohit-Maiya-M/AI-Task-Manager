@@ -1,0 +1,169 @@
+/* Layout & Theme */
+.task-page-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #161616; /* Dark background */
+  color: #f4f4f4;
+}
+
+.task-page-container {
+  flex: 1;
+  margin-left: 260px; /* Sidebar offset */
+  padding: 60px 8%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.notion-form {
+  max-width: 800px;
+  width: 100%;
+}
+
+/* Title Input */
+.notion-title-input {
+  background: transparent;
+  color: #ffffff;
+  font-size: 2.8rem;
+  font-weight: 700;
+  border: none;
+  width: 100%;
+  margin-bottom: 24px;
+  outline: none;
+}
+
+.notion-title-input::placeholder {
+  color: #393939;
+}
+
+/* Property Grid - Fixes Condensed Layout */
+.notion-properties {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.property-row {
+  display: flex;
+  align-items: flex-start; /* Aligns to top for textareas */
+  min-height: 32px;
+}
+
+.property-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 160px; /* Fixed width for the 'Key' side */
+  flex-shrink: 0;
+  color: #a8a8a8;
+  font-size: 14px;
+  padding-top: 6px;
+}
+
+.property-value {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Carbon Select Fixes */
+.notion-select .cds--select-input {
+  background-color: transparent !important;
+  border: none !important;
+  color: #f4f4f4 !important;
+  padding: 0 8px !important;
+  height: 32px !important;
+  font-size: 14px !important;
+  cursor: pointer;
+}
+
+/* Removes redundant Carbon label and arrow */
+.notion-select .cds--label, 
+.notion-select .cds--select__arrow {
+  display: none !important;
+}
+
+/* Input Fields */
+.property-value-textarea, 
+.property-value-input, 
+.date-picker-input {
+  background: transparent;
+  color: #f4f4f4;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  padding: 6px 8px;
+}
+
+.property-value-textarea {
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.date-picker-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+.read-only-text {
+  color: #6f6f6f;
+  padding-left: 8px;
+}
+
+/* Main Content Area */
+.notion-divider {
+  border: 0;
+  border-top: 1px solid #393939;
+  margin: 16px 0 24px 0;
+}
+
+.notion-body-input {
+  background: transparent;
+  color: #f4f4f4;
+  border: none;
+  width: 100%;
+  min-height: 300px;
+  outline: none;
+  resize: none;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Footer Button */
+.notion-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 40px;
+}
+
+.notion-select .cds--select-input option {
+  background-color: #262626 !important; /* Slightly lighter than page for depth */
+  color: #ffffff !important;
+}
+
+/* For browsers that support styling the dropdown wrapper */
+.cds--select-input:focus-within {
+  background-color: #262626 !important;
+}
+
+/* Ensure the text is white and background is dark when the dropdown is open */
+.notion-select select {
+  background-color: transparent !important;
+}
+
+/* Hover/Selection state within the dropdown */
+.notion-select option:hover,
+.notion-select option:focus,
+.notion-select option:active {
+  background-color: #393939 !important;
+  color: #ffffff !important;
+}
+
+/* Remove the default browser arrow styling to keep it clean */
+.notion-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}

@@ -1,0 +1,13 @@
+/* Scope to your PasswordInput by id */
+#password .cds--text-input--password__visibility__toggle cds--btn cds--tooltip__trigger cds--tooltip--a11y cds--tooltip--bottom cds--tooltip--align-end {
+  background-color: transparent !important; /* remove background */
+  border: none !important;                  /* remove border */
+  box-shadow: none !important;              /* remove shadow */
+  color: #1b3bd9 !important;                /* text/icon color */
+}
+
+/* Hover state */
+#password .cds--text-input--password__visibility__toggle cds--btn cds--tooltip__trigger cds--tooltip--a11y cds--tooltip--bottom cds--tooltip--align-end {
+  background-color: transparent !important;
+  color: #0043ce !important;
+}

@@ -1,13 +1,11 @@
 package com.rohit.aitaskmanager.service;
 
-
-import com.rohit.aitaskmanager.dto.GroupMemberDTO;
+import com.rohit.aitaskmanager.dto.GroupCreationRequestDTO;
+import com.rohit.aitaskmanager.dto.GroupMemberRequestDTO;
+import com.rohit.aitaskmanager.dto.GroupMemberResponseDTO;
 import com.rohit.aitaskmanager.dto.TaskRequestDTO;
 import com.rohit.aitaskmanager.dto.TaskResponseDTO;
-import com.rohit.aitaskmanager.exception.GroupNotFoundException;
-import com.rohit.aitaskmanager.exception.TaskNotFoundException;
-import com.rohit.aitaskmanager.exception.UnauthorizedException;
-import com.rohit.aitaskmanager.exception.UsernameNotFoundException;
+import com.rohit.aitaskmanager.exception.*;
 import com.rohit.aitaskmanager.models.*;
 import com.rohit.aitaskmanager.repository.GroupRepository;
 import com.rohit.aitaskmanager.repository.TaskGroupMemberRepository;
@@ -23,21 +21,128 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class TaskGroupAdminService {
+public class GroupAdminService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final TaskGroupMemberRepository taskGroupMemberRepository;
 
-    public TaskGroupAdminService(TaskRepository taskRepository, UserRepository userRepository, GroupRepository groupRepository, TaskGroupMemberRepository taskGroupMemberRepository){
+    public GroupAdminService(TaskRepository taskRepository,
+                             UserRepository userRepository,
+                             GroupRepository groupRepository,
+                             TaskGroupMemberRepository taskGroupMemberRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.taskGroupMemberRepository = taskGroupMemberRepository;
     }
 
-    // Task
+
+    // ---------------- AUTHENTICATION ----------------
+
+    public void verifyGroupAdminAccess(Long userId, Long groupId, String password) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group not found with ID: " + groupId));
+
+        if (password != null && !group.getPassword().equals(password)) {
+            throw new InvalidCredentialsException("Invalid group administrative password.");
+        }
+
+        TaskGroupMember admin = getGroupMemberOrThrow(userId, groupId);
+
+        if (admin.getGroupRole() != GroupRole.ADMIN) {
+            throw new UnauthorizedException("Only admins can add members.");
+        }
+    }
+
+    // ---------------- GROUP MANAGEMENT ----------------
+
+    public GroupMemberResponseDTO createGroup(Long userId, GroupCreationRequestDTO dto) {
+        Group group = mapToEntity(dto);
+        Group newGroup = groupRepository.save(group);
+
+        User user = getUserOrThrow(userId);
+
+        TaskGroupMember admin = TaskGroupMember.builder()
+                .group(newGroup)
+                .user(user)
+                .groupRole(GroupRole.ADMIN)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        TaskGroupMember savedAdmin = taskGroupMemberRepository.save(admin);
+
+        return GroupMemberResponseDTO.builder()
+                .groupId(savedAdmin.getGroup().getId())
+                .groupName(savedAdmin.getGroup().getName())
+                .userId(savedAdmin.getUser().getId())
+                .username(savedAdmin.getUser().getUsername())
+                .role(savedAdmin.getGroupRole().name())
+                .createdAt(savedAdmin.getCreatedAt())
+                .build();
+    }
+
+    public GroupMemberResponseDTO createMember(Long userId, GroupMemberRequestDTO dto) {
+        TaskGroupMember admin = getGroupMemberOrThrow(userId, dto.getGroupId());
+
+        if (admin.getGroupRole() != GroupRole.ADMIN) {
+            throw new UnauthorizedException("Only admins can add members.");
+        }
+
+        Group group = getGroupOrThrow(dto.getGroupId());
+        User user = getUserOrThrow(dto.getUserId());
+
+        TaskGroupMember membership = TaskGroupMember.builder()
+                .group(group)
+                .user(user)
+                .groupRole(GroupRole.MEMBER)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        TaskGroupMember savedMember = taskGroupMemberRepository.save(membership);
+
+        return GroupMemberResponseDTO.builder()
+                .groupId(savedMember.getGroup().getId())
+                .groupName(savedMember.getGroup().getName())
+                .userId(savedMember.getUser().getId())
+                .username(savedMember.getUser().getUsername())
+                .role(savedMember.getGroupRole().name())
+                .createdAt(savedMember.getCreatedAt())
+                .build();
+    }
+
+    public List<GroupMemberResponseDTO> viewMembers(Long userId, Long groupId) {
+        verifyGroupAdminAccess(userId, groupId, null);
+
+        List<TaskGroupMember> members = taskGroupMemberRepository.findByGroupId(groupId);
+
+        return members.stream()
+                .map(member -> GroupMemberResponseDTO.builder()
+                        .groupId(member.getGroup().getId())
+                        .groupName(member.getGroup().getName())
+                        .userId(member.getUser().getId())
+                        .username(member.getUser().getUsername()) // Assumes User entity contains a getUsername() method
+                        .role(member.getGroupRole().name())
+                        .createdAt(member.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public void deleteMember(Long userId, GroupMemberRequestDTO dto) {
+        TaskGroupMember admin = getGroupMemberOrThrow(userId, dto.getGroupId());
+
+        if (admin.getGroupRole() != GroupRole.ADMIN) {
+            throw new UnauthorizedException("Only admins can delete members.");
+        }
+
+        TaskGroupMember membership = getGroupMemberOrThrow(dto.getUserId(), dto.getGroupId());
+        taskGroupMemberRepository.delete(membership);
+    }
+
+    // ---------------- TASK MANAGEMENT ----------------
+    // (Your existing createTaskForGroup, createTaskForMember, editTask, assignTask, completeTask remain the same)
+
 
     public TaskResponseDTO createTaskForGroup(Long userId, Long groupId, TaskRequestDTO dto){
         TaskGroupMember membership = getGroupMemberOrThrow(userId, groupId);
@@ -47,7 +152,7 @@ public class TaskGroupAdminService {
         }
 
         Group group = membership.getGroup();
-        Task newTask = mapToEntity(dto);
+        Task newTask = mapToEntity(userId, dto);
         newTask.setGroup(group);
 
         Task savedTask = taskRepository.save(newTask);
@@ -62,8 +167,10 @@ public class TaskGroupAdminService {
             throw new UnauthorizedException("Only admins can create Tasks");
         }
 
-        Task newTask = mapToEntity(dto);
+        Group group = assignedUserMembership.getGroup();
+        Task newTask = mapToEntity(userId, dto);
         newTask.setAssignedTo(assignedUserMembership.getUser());
+        newTask.setGroup(group);
 
         Task savedTask = taskRepository.save(newTask);
         return mapToResponse(savedTask);
@@ -124,16 +231,20 @@ public class TaskGroupAdminService {
 
 
     public TaskResponseDTO completeTask(Long userId, Long groupId, Long taskId){
-        Task task = taskRepository.findByIdAndGroupIdAndTaskType(taskId, groupId, TaskType.GROUP)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
+        Task task = taskRepository.findByIdAndGroupIdAndTaskType(taskId, groupId, TaskType.GROUP);
 
-        if(!task.getAssignedTo().getId().equals(userId)){
-            throw new UnauthorizedException("You are not assigned to this task");
+        if(task == null)
+            throw new TaskNotFoundException("Task not found with id: " + taskId);
+
+        TaskGroupMember membership = getGroupMemberOrThrow(userId, groupId);
+
+
+        if(membership.getGroupRole() != GroupRole.ADMIN && !task.getAssignedTo().getId().equals(userId)) {
+            throw new UnauthorizedException("You are not authorized to complete this task");
         }
-
         task.setStatus(Status.DONE);
         task.setCompleted(true);
-
+        task.setLastVisited(LocalDateTime.now());
         return mapToResponse(taskRepository.save(task));
     }
 
@@ -154,23 +265,8 @@ public class TaskGroupAdminService {
     }
 
 
-
-
-    // Members
-
-    public TaskGroupMember createMember(GroupMemberDTO dto){
-        TaskGroupMember membership = mapToEntity(dto);
-        membership.setGroupRole(GroupRole.MEMBER);
-        return taskGroupMemberRepository.save(membership);
-    }
-
-    public void deleteMember(GroupMemberDTO dto){
-        TaskGroupMember membership = getGroupMemberOrThrow(dto.getUserId(), dto.getGroupId());
-        taskGroupMemberRepository.delete(membership);
-    }
-
-
-    // Searching and Filtering
+    // ---------------- FILTERING & SEARCH ----------------
+    // (Your existing filterTasks and searchTasks remain the same) AccessDenied
 
     public Page<TaskResponseDTO> filterTasks(Long userId,
                                              Long groupId,
@@ -180,13 +276,11 @@ public class TaskGroupAdminService {
                                              int page,
                                              int size,
                                              String sortBy,
-                                             String sortDir
-    ){
+                                             String sortDir) {
 
         TaskGroupMember adminUserMembership = getGroupMemberOrThrow(userId, groupId);
 
-
-        if(adminUserMembership.getGroupRole() != GroupRole.ADMIN){
+        if (adminUserMembership.getGroupRole() != GroupRole.ADMIN) {
             throw new UnauthorizedException("Only admins can filter Tasks");
         }
 
@@ -195,25 +289,24 @@ public class TaskGroupAdminService {
 
         Page<Task> tasks;
         if (status != null && priority != null && category != null) {
-            tasks = taskRepository.findByCreatedByIdAndStatusAndPriorityAndCategoryIgnoreCaseAndTaskTypeAndGroupId(userId, status, priority, category, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndStatusAndPriorityAndCategoryIgnoreCaseAndTaskType(groupId, status, priority, category, TaskType.GROUP, pageable);
         } else if (status != null && priority != null) {
-            tasks = taskRepository.findByCreatedByIdAndStatusAndPriorityAndTaskTypeAndGroupId(userId, status, priority, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndStatusAndPriorityAndTaskType(groupId, status, priority, TaskType.GROUP, pageable);
         } else if (status != null && category != null) {
-            tasks = taskRepository.findByCreatedByIdAndStatusAndCategoryIgnoreCaseAndTaskTypeAndGroupId(userId, status, category, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndStatusAndCategoryIgnoreCaseAndTaskType(groupId, status, category, TaskType.GROUP, pageable);
         } else if (priority != null && category != null) {
-            tasks = taskRepository.findByCreatedByIdAndPriorityAndCategoryIgnoreCaseAndTaskTypeAndGroupId(userId, priority, category, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndPriorityAndCategoryIgnoreCaseAndTaskType(groupId, priority, category, TaskType.GROUP, pageable);
         } else if (status != null) {
-            tasks = taskRepository.findByCreatedByIdAndStatusAndTaskTypeAndGroupId(userId, status, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndStatusAndTaskType(groupId, status, TaskType.GROUP, pageable);
         } else if (priority != null) {
-            tasks = taskRepository.findByCreatedByIdAndPriorityAndTaskTypeAndGroupId(userId, priority, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndPriorityAndTaskType(groupId, priority, TaskType.GROUP, pageable);
         } else if (category != null) {
-            tasks = taskRepository.findByCreatedByIdAndCategoryIgnoreCaseAndTaskTypeAndGroupId(userId, category, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndCategoryIgnoreCaseAndTaskType(groupId, category, TaskType.GROUP, pageable);
         } else {
-            tasks = taskRepository.findByCreatedByIdAndTaskTypeAndGroupId(userId, TaskType.GROUP, groupId, pageable);
+            tasks = taskRepository.findByGroupIdAndTaskType(groupId, TaskType.GROUP, pageable);
         }
 
-        return tasks
-                .map(this::mapToResponse);
+        return tasks.map(this::mapToResponse);
     }
 
     public Page<TaskResponseDTO> searchTasks(Long userId,
@@ -222,47 +315,46 @@ public class TaskGroupAdminService {
                                              int page,
                                              int size,
                                              String sortBy,
-                                             String sortDir
-    ){
+                                             String sortDir) {
 
         TaskGroupMember adminUserMembership = getGroupMemberOrThrow(userId, groupId);
 
-
-        if(adminUserMembership.getGroupRole() != GroupRole.ADMIN){
+        if (adminUserMembership.getGroupRole() != GroupRole.ADMIN) {
             throw new UnauthorizedException("Only admins can search Tasks");
         }
 
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Task> titleDescMatches = taskRepository.findByCreatedByIdAndTitleOrDescriptionAndGroupId(userId, keyword, TaskType.GROUP, groupId, pageable);
-        Page<Task> tagsMatches = taskRepository.findByCreatedByIdAndTagKeywordAndGroupId(userId, keyword, TaskType.GROUP, groupId, pageable);
+        Page<Task> titleDescMatches = taskRepository.findByGroupIdAndTitleOrDescription(groupId, keyword, TaskType.GROUP, pageable);
+        Page<Task> tagsMatches = taskRepository.findByGroupIdAndTagKeyword(groupId, keyword, TaskType.GROUP, pageable);
 
         Set<Task> combinedSearch = new HashSet<>();
         combinedSearch.addAll(titleDescMatches.getContent());
         combinedSearch.addAll(tagsMatches.getContent());
 
-        List<TaskResponseDTO> dtoList = combinedSearch
-                .stream()
+        List<TaskResponseDTO> dtoList = combinedSearch.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
 
-        long finalCount = taskRepository.countByCreatedByIdAndTitleOrDescriptionAndGroupId(userId, keyword, groupId, TaskType.GROUP)
-                + taskRepository.countByCreatedByIdAndTagKeywordAndGroupId(userId, keyword, groupId, TaskType.GROUP);
+        long finalCount = taskRepository.countByGroupIdAndTitleOrDescription(groupId, keyword, TaskType.GROUP)
+                + taskRepository.countByGroupIdAndTagKeyword(groupId, keyword, TaskType.GROUP);
 
         return new PageImpl<>(dtoList, pageable, finalCount);
     }
 
+    // ---------------- UTILS ----------------
 
+    private Group mapToEntity(GroupCreationRequestDTO dto) {
+        return Group.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .password(dto.getPassword())
+                .build();
+    }
 
-
-
-
-
-    // Utils
-
-    private Task mapToEntity(TaskRequestDTO dto){
-        User user = getUserOrThrow(dto.getUserId());
+    private Task mapToEntity(Long userId, TaskRequestDTO dto){
+        User user = getUserOrThrow(userId);
 
 
         return Task.builder()
@@ -282,11 +374,39 @@ public class TaskGroupAdminService {
                 .build();
     }
 
+    private Task getTaskOrThrow(Long groupId, Long taskId){
+        Task task = taskRepository.findByIdAndGroupIdAndTaskType(taskId, groupId, TaskType.GROUP);
+
+        if(task == null)
+            throw new TaskNotFoundException("Task not found!");
+
+        return task;
+    }
+
+    private User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+    }
+
+    private Group getGroupOrThrow(Long groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group not found with id: " + groupId));
+    }
+
+    private TaskGroupMember getGroupMemberOrThrow(Long userId, Long groupId) {
+        TaskGroupMember membership = taskGroupMemberRepository.findByUserIdAndGroupId(userId, groupId);
+        if (membership == null) {
+            throw new UnauthorizedException("User not in group.");
+        }
+        return membership;
+    }
+
     private TaskResponseDTO mapToResponse(Task task) {
         return TaskResponseDTO.builder()
                 .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
+                .content(task.getContent())
                 .status(task.getStatus())
                 .priority(task.getPriority())
                 .dueDate(task.getDueDate())
@@ -299,52 +419,4 @@ public class TaskGroupAdminService {
                 .groupId(task.getGroup() != null ? task.getGroup().getId() : null)
                 .build();
     }
-
-    private TaskGroupMember mapToEntity(GroupMemberDTO dto){
-        Group group = getGroupOrThrow(dto.getUserId(), dto.getGroupId());
-        User user = getUserOrThrow(dto.getUserId());
-        return TaskGroupMember.builder()
-                .group(group)
-                .user(user)
-                .build();
-    }
-
-    private User getUserOrThrow(Long userId){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with id: " + userId));
-        return user;
-
-    }
-
-    private User getAssignedUserOrThrow(Long userId){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with id: " + userId));
-        return user;
-    }
-
-    private Task getTaskOrThrow(Long groupId, Long taskId){
-        Task task = taskRepository.findByIdAndGroupIdAndTaskType(taskId, groupId, TaskType.GROUP);
-
-        if(task == null)
-            throw new TaskNotFoundException("Task not found with id: "+ taskId);
-
-        return task;
-    }
-
-    private Group getGroupOrThrow(Long userId, Long groupId){
-        Group group = groupRepository.findByIdAndMemberId(groupId, userId);
-
-        if(group == null)
-            throw new GroupNotFoundException("Group not found with id: " + groupId);
-
-        return group;
-    }
-
-    private TaskGroupMember getGroupMemberOrThrow(Long userId, Long groupId){
-        TaskGroupMember membership = taskGroupMemberRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new UnauthorizedException("User not in group."));
-        return membership;
-    }
-
-
 }

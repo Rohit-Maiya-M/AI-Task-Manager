@@ -126,4 +126,36 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
+    @ExceptionHandler(UserNotInGroupException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotInGroupException(
+            UserNotInGroupException ex,
+            HttpServletRequest request
+    ){
+        ErrorResponse error = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .path(request.getRequestURI())
+                .status(HttpStatus.NOT_FOUND.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(
+            UnauthorizedException ex,
+            HttpServletRequest request
+    ){
+        ErrorResponse error = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .path(request.getRequestURI())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
 }

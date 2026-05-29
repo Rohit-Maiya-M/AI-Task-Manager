@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/aitaskmanager/personal")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 public class TaskPersonalController {
     TaskPersonalService taskPersonalService;
 
@@ -85,6 +86,35 @@ public class TaskPersonalController {
         Page<TaskResponseDTO> searchedTasks = taskPersonalService.searchTasks(userId, keyword,page, size, sortBy, sortDir);
         return ResponseEntity.ok(searchedTasks);
     }
+
+    @PatchMapping("/{taskId}/visit")
+    public ResponseEntity<Void> markAsVisited(
+            Authentication auth,
+            @PathVariable Long taskId
+    ) {
+        Long userId = (Long) auth.getPrincipal();
+        taskPersonalService.updateLastVisited(userId, taskId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskResponseDTO> getTaskById(
+            Authentication auth,
+            @PathVariable Long taskId
+    ) {
+        Long userId = (Long) auth.getPrincipal();
+        return ResponseEntity.ok(taskPersonalService.getTaskById(userId, taskId));
+    }
+
+    @GetMapping("/getTags")
+    public ResponseEntity<List<String>> getTags(
+            Authentication auth
+    ){
+        Long userId = (Long) auth.getPrincipal();
+        List<String> tags = taskPersonalService.getTags(userId);
+        return ResponseEntity.ok(tags);
+    }
+
 
     @GetMapping("/recents")
     public ResponseEntity<List<TaskResponseDTO>> recentTasks(

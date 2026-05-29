@@ -1,0 +1,22 @@
+.choice-tile {
+  transition: all 0.3s ease; /* smooth animation */
+  opacity: 0.85;             /* default slightly faded */
+}
+
+.choice-tile:hover {
+  opacity: 1;                /* brighten on hover */
+  transform: scale(1.05);    /* subtle zoom */
+}
+
+.choice-tile:active {
+  transform: scale(0.95);    /* pressed-in effect */
+  opacity: 0.9;              /* slightly dim when pressed */
+}
+
+.choice-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;   /* allows tiles to drop to next line if screen is narrow */
+  gap: 20px;         /* spacing between tiles */
+}
+
