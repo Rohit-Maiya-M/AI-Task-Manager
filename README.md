@@ -152,7 +152,6 @@ The easiest way on Windows is to run the root launcher:
 
 This starts:
 
-- FastAPI AI service on port `8000`
 - Spring Boot backend on port `8080`
 - React frontend on port `3000`
 
@@ -161,9 +160,8 @@ Keep the launcher terminal open while using the app. Press `Ctrl+C` in that term
 If you prefer to start each service manually, start them in this order:
 
 1. PostgreSQL
-2. FastAPI AI service on port `8000`
-3. Spring Boot backend on port `8080`
-4. React frontend on port `3000`
+2. Spring Boot backend on port `8080`
+3. React frontend on port `3000`
 
 Then open:
 
