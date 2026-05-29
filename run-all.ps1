@@ -9,22 +9,6 @@ function Test-Command {
     return [bool](Get-Command $Name -ErrorAction SilentlyContinue)
 }
 
-function Start-ServiceJob {
-    param(
-        [string]$Name,
-        [string]$WorkingDirectory,
-        [string[]]$Command
-    )
-
-    Write-Host "Starting $Name..." -ForegroundColor Cyan
-    return Start-Job -Name $Name -ArgumentList $WorkingDirectory, $Command -ScriptBlock {
-        param($Dir, $Cmd)
-        Set-Location $Dir
-        $Args = if ($Cmd.Count -gt 1) { $Cmd[1..($Cmd.Count - 1)] } else { @() }
-        & $Cmd[0] @Args
-    }
-}
-
 if (-not (Test-Command "npm")) {
     throw "npm was not found. Install Node.js before running the frontend."
 }
@@ -36,13 +20,19 @@ if (-not (Test-Command "java")) {
 $jobs = @()
 
 try {
-    $jobs += Start-ServiceJob -Name "spring-backend" -WorkingDirectory $BackendDir -Command @(
-        ".\mvnw.cmd", "spring-boot:run"
-    )
+    Write-Host "Starting spring-backend..." -ForegroundColor Cyan
+    $jobs += Start-Job -Name "spring-backend" -ArgumentList $BackendDir -ScriptBlock {
+        param($Dir)
+        Set-Location $Dir
+        .\mvnw.cmd spring-boot:run
+    }
 
-    $jobs += Start-ServiceJob -Name "react-frontend" -WorkingDirectory $FrontendDir -Command @(
-        "npm", "start"
-    )
+    Write-Host "Starting react-frontend..." -ForegroundColor Cyan
+    $jobs += Start-Job -Name "react-frontend" -ArgumentList $FrontendDir -ScriptBlock {
+        param($Dir)
+        Set-Location $Dir
+        npm start
+    }
 
     Write-Host ""
     Write-Host "All services are starting." -ForegroundColor Green
