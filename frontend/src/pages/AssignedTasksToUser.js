@@ -30,7 +30,7 @@ export default function AssignedTasksToUser() {
 
         // Filter assignments matching this member's explicit ID parameter state
         const groupBacklog = response.data.content || [];
-        const personalAssignments = groupBacklog.filter(task => task.assignedUserId === userId);
+        const personalAssignments = groupBacklog.filter(task => String(task.assignedUserId) === String(userId));
         
         setTasks(personalAssignments);
       } catch (error) {
@@ -99,7 +99,12 @@ export default function AssignedTasksToUser() {
           ) : (
             <div className="tasks-empty-state">
               <p>No tasks currently assigned to this member.</p>
-              <button className="assign-btn" onClick={() => navigate(`/group/task/create?groupId=${groupId}`)}>
+              <button
+                className="assign-btn"
+                onClick={() => navigate(`/group/task/create?groupId=${groupId}`, {
+                  state: { userId, username, role }
+                })}
+              >
                 Create & Assign First Task
               </button>
             </div>

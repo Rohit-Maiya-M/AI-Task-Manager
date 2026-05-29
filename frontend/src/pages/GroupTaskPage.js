@@ -14,6 +14,7 @@ export default function GroupTaskPage() {
   const groupId = searchParams.get("groupId");
   // Check if an explicit pre-assigned user context was passed down from the drill-down view state
   const preAssignedUserId = location.state?.userId || "";
+  const preAssignedUsername = location.state?.username || "";
 
   // Form Field States matching TaskRequestDTO
   const [title, setTitle] = useState("");
@@ -21,7 +22,7 @@ export default function GroupTaskPage() {
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
   const [category, setCategory] = useState("General");
-  const [assignedUserId, setAssignedUserId] = useState(preAssignedUserId);
+  const [assignedUserId, setAssignedUserId] = useState(preAssignedUserId ? String(preAssignedUserId) : "");
 
   // Group Roster state for the dropdown list selection
   const [roster, setRoster] = useState([]);
@@ -122,11 +123,16 @@ export default function GroupTaskPage() {
               >
                 <option value="">-- Leave Unassigned (Group Backlog) --</option>
                 {roster.map(member => (
-                  <option key={member.userId} value={member.userId}>
+                  <option key={member.userId} value={String(member.userId)}>
                     {member.username} ({member.role})
                   </option>
                 ))}
               </select>
+              {preAssignedUserId && (
+                <span className="locked-assignee-note">
+                  Locked to {preAssignedUsername || `User #${preAssignedUserId}`} from the member workspace.
+                </span>
+              )}
             </div>
 
             <div className="form-row-split">

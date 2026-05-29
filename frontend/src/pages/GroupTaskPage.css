@@ -120,6 +120,12 @@
   color: #f8fafc;
 }
 
+.locked-assignee-note {
+  color: #c084fc;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
 .task-error-alert {
   background-color: rgba(239, 68, 68, 0.12);
   border: 1px solid #ef4444;

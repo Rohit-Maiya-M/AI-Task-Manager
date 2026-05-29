@@ -14,6 +14,7 @@ export default function GroupAdminDashBoard() {
 
   // Dashboard state hooks matching the Personal structural style
   const [dueTasks, setDueTasks] = useState([]);
+  const [memberLookup, setMemberLookup] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   
   // Search state hooks
@@ -29,7 +30,8 @@ export default function GroupAdminDashBoard() {
       try {
         setIsLoading(true);
         // Hits @GetMapping("/filter/{groupId}") mirroring personal 7 days implementation
-        const response = await api.get(`/group/admin/filter/${groupId}`, {
+        const [tasksResponse, membersResponse] = await Promise.all([
+          api.get(`/group/admin/filter/${groupId}`, {
           params: { 
             page: 0, 
             size: 10, 
@@ -38,8 +40,17 @@ export default function GroupAdminDashBoard() {
             // If your backend filter service supports status tracking parameters, 
             // you can pass extra fields here smoothly.
           }
+          }),
+          api.get(`/group/admin/members/${groupId}`)
+        ]);
+
+        const lookup = {};
+        (membersResponse.data || []).forEach(member => {
+          lookup[String(member.userId)] = member.username;
         });
-        setDueTasks(response.data.content); 
+
+        setMemberLookup(lookup);
+        setDueTasks(tasksResponse.data.content); 
       } catch (error) {
         console.error("Failed to load group deadlines:", error);
       } finally {
@@ -149,7 +160,7 @@ export default function GroupAdminDashBoard() {
                     {task.description || "No description provided."}
                   </div>
                   <span className="task-assignee" style={{ fontSize: "0.8rem", color: "#c084fc", display: "block", marginTop: "6px" }}>
-                    Assigned to: {task.assignedUserName || "Unassigned"}
+                    Assigned to: {task.assignedUserId ? memberLookup[String(task.assignedUserId)] || `User #${task.assignedUserId}` : "Unassigned"}
                   </span>
                 </div>
                 <div className="task-meta">
