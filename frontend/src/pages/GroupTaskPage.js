@@ -86,7 +86,7 @@ export default function GroupTaskPage() {
 
   return (
     <div className="group-task-container admin-theme" style={{ display: "flex", minHeight: "100vh" }}>
-      <Sidebar basePath="/group" onSearchClick={() => {}} recentItems={[]} />
+      <Sidebar basePath="/group" homePath={`/group/admin?groupId=${groupId}`} onSearchClick={() => {}} recentItems={[]} />
 
       <div className="group-task-main">
         <button className="back-btn" onClick={() => navigate(-1)}>

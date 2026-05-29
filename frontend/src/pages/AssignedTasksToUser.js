@@ -45,7 +45,7 @@ export default function AssignedTasksToUser() {
 
   return (
     <div className="user-tasks-container admin-theme" style={{ display: "flex", minHeight: "100vh" }}>
-      <Sidebar basePath="/group" onSearchClick={() => {}} recentItems={[]} />
+      <Sidebar basePath="/group" homePath={`/group/admin?groupId=${groupId}`} onSearchClick={() => {}} recentItems={[]} />
 
       <div className="user-tasks-main">
         <button className="back-btn" onClick={() => navigate(`/group/admin/view-members?groupId=${groupId}`)}>

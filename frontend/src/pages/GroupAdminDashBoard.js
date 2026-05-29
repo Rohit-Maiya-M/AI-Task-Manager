@@ -98,6 +98,7 @@ export default function GroupAdminDashBoard() {
       {/* Reusable Sidebar passed with team contextual scope */}
       <Sidebar 
         basePath="/group" 
+        homePath={`/group/admin?groupId=${groupId}`}
         onSearchClick={() => setIsSearchOpen(true)} 
         recentItems={sidebarRecents} 
       />

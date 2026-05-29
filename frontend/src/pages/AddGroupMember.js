@@ -51,7 +51,7 @@ export default function AddGroupMember() {
     <div className="group-member-container admin-theme" style={{ display: "flex", minHeight: "100vh" }}>
       
       {/* Reusable Sidebar maintaining administration context */}
-      <Sidebar basePath="/group" onSearchClick={() => {}} recentItems={[]} />
+      <Sidebar basePath="/group" homePath={`/group/admin?groupId=${groupId}`} onSearchClick={() => {}} recentItems={[]} />
 
       <div className="group-member-main">
         <button className="back-btn" onClick={() => navigate(`/group/admin?groupId=${groupId}`)}>

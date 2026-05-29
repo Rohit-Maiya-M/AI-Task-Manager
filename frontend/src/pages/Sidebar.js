@@ -1,11 +1,14 @@
 import { SideNav, SideNavItems } from "@carbon/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
-export default function Sidebar({ basePath, onSearchClick, recentItems = [] }) {
+export default function Sidebar({ basePath = "/choice", homePath, onSearchClick, recentItems = [] }) {
+  const navigate = useNavigate();
   const [width, setWidth] = useState(260);
   const minWidth = 200;
   const maxWidth = 400;
+  const resolvedHomePath = homePath || basePath || "/choice";
 
   const handleMouseDown = (e) => {
     e.preventDefault();
@@ -37,15 +40,17 @@ export default function Sidebar({ basePath, onSearchClick, recentItems = [] }) {
       >
         <SideNavItems>
           <div className="sidebar-buttons">
-            <a href={`${basePath}`} className="sidebar-btn">Home</a>
+            <button type="button" className="sidebar-btn" onClick={() => navigate(resolvedHomePath)}>
+              Home
+            </button>
             
-            <div 
+            <button
+              type="button"
               className="sidebar-btn" 
-              onClick={(e) => { e.preventDefault(); onSearchClick(); }} 
-              style={{ cursor: "pointer" }}
+              onClick={() => onSearchClick && onSearchClick()}
             >
               Search
-            </div>
+            </button>
             
             <div className="recents-section">
               <span className="sidebar-label">Recents</span>
@@ -66,7 +71,9 @@ export default function Sidebar({ basePath, onSearchClick, recentItems = [] }) {
               </div>
             </div>
             
-            <a href={`${basePath}/aiagent`} className="sidebar-btn">AI Agent</a>
+            <button type="button" className="sidebar-btn" onClick={() => navigate(`${basePath}/aiagent`)}>
+              AI Agent
+            </button>
           </div>
         </SideNavItems>
         <div style={{ flexGrow: 1 }} />
