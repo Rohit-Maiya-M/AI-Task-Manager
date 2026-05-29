@@ -21,7 +21,7 @@ function Start-ServiceJob {
     return Start-Job -Name $Name -ArgumentList $WorkingDirectory, $Command -ScriptBlock {
         param($Dir, $Cmd)
         Set-Location $Dir
-        $Args = if ($Cmd.Length -gt 1) { $Cmd[1..($Cmd.Length - 1)] } else { @() }
+        $Args = if ($Cmd.Count -gt 1) { $Cmd[1..($Cmd.Count - 1)] } else { @() }
         & $Cmd[0] @Args
     }
 }
