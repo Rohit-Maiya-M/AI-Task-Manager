@@ -144,7 +144,21 @@ http://localhost:8080/aitaskmanager
 
 ## Running the Full App
 
-Start the services in this order:
+The easiest way on Windows is to run the root launcher:
+
+```powershell
+.\run-all.bat
+```
+
+This starts:
+
+- FastAPI AI service on port `8000`
+- Spring Boot backend on port `8080`
+- React frontend on port `3000`
+
+Keep the launcher terminal open while using the app. Press `Ctrl+C` in that terminal to stop the services.
+
+If you prefer to start each service manually, start them in this order:
 
 1. PostgreSQL
 2. FastAPI AI service on port `8000`
