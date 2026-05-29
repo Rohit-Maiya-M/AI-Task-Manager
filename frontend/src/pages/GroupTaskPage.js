@@ -57,9 +57,10 @@ export default function GroupTaskPage() {
       const taskPayload = {
         title: title,
         description: description,
-        dueDate: dueDate,
+        dueDate: `${dueDate}T23:59:59`,
         priority: priority,
-        category: category
+        category: category,
+        taskType: "GROUP"
       };
 
       let response;
